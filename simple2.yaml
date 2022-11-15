@@ -1,0 +1,109 @@
+#simple Einstein ring simulation 
+#data from lenstronomy Einstein ring simulation notebook: https://github.com/sibirrer/lenstronomy_extensions/blob/main/lenstronomy_extensions/Notebooks/simple_ring.ipynb
+
+DATASET:
+    NAME: SimpleDataset2 # set a name, this value is only used if you request the h5 file format
+    PARAMETERS:
+        SIZE: 100 # number of images in the full dataset, I'll keep it small for this example
+        OUTDIR: SimpleDataset2 # will be created on your system if your request to save images
+        SEED: 10
+COSMOLOGY:
+    PARAMETERS:
+        H0: 74.0
+        Om0: 0.3
+IMAGE:
+    PARAMETERS:
+        exposure_time: 300
+        numPix: 32
+        pixel_scale: 0.263
+        psf_type: 'GAUSSIAN'
+        read_noise: 7
+        ccd_gain: 6.083
+
+SURVEY:
+    PARAMETERS:
+        BANDS: g
+        seeing: 0.9
+        magnitude_zero_point: 30.0
+        sky_brightness: 30.0
+        num_exposures: 10
+SPECIES:
+    GALAXY_1:  
+        NAME: SimulatedLens 
+        LIGHT_PROFILE_1: 
+            NAME: SERSIC_ELLIPSE 
+            PARAMETERS:
+                magnitude: 16 
+                center_x: 0.05 
+                center_y: 0.0
+                R_sersic: 0.6
+                n_sersic: 2.0
+                e1: -0.1                
+                e2: 0.1
+        MASS_PROFILE_1:
+            NAME: SIE
+            PARAMETERS:
+                theta_E:
+                    DISTRIBUTION:
+                        NAME: uniform
+                        PARAMETERS:
+                            minimum: 0.5
+                            maximum: 4.0 
+                e1: 0.07 
+                e2: -0.03 
+                center_x: 0.05
+                center_y: 0.0
+        SHEAR_PROFILE_1:
+            NAME: SHEAR
+            PARAMETERS:
+                gamma1: 0.0
+                gamma2: -0.05
+    GALAXY_2:
+        NAME: SimulatedSource
+        LIGHT_PROFILE_1:
+            NAME: SERSIC_ELLIPSE
+            PARAMETERS:
+                magnitude: 16
+                center_x: 0.1
+                center_y: 0.0
+                R_sersic: 0.1
+                n_sersic: 1
+                e1: -0.1
+                e2: 0.1
+        MASS_PROFILE_1:
+            NAME: SIE
+            PARAMETERS:
+                theta_E: 2.0
+                e1: 0.1
+                e2: -0.1
+                center_x: 0.0
+                center_y: 0.0
+    NOISE_1:
+        NAME: POISSON_NOISE
+        PARAMETERS:
+            mean: 50
+GEOMETRY:
+    CONFIGURATION_1: 
+        NAME: GalaxyGalaxySimulated # describe what's in this configuration
+        FRACTION: 0.5 # images from this configuration will make up 1/4 of the dataset
+        PLANE_1: # add all objects in the first plane
+            OBJECT_1: SimulatedLens # name of the object to put in this plane
+            PARAMETERS:
+                REDSHIFT: 0.5
+        PLANE_2: # add all objects in the second plane
+            OBJECT_1: SimulatedSource
+            PARAMETERS:
+                REDSHIFT: 2.0
+        NOISE_SOURCE_1: POISSON_NOISE
+    CONFIGURATION_2:
+        NAME: Nonlensed
+        FRACTION: 0.5
+        PLANE_1: 
+            OBJECT_1: SimulatedSource
+            PARAMETERS:
+                REDSHIFT: 0.5
+        PLANE_2:
+            OBJECT_1: SimulatedLens
+            PARAMETERS:
+                REDSHIFT: 2.0 
+
