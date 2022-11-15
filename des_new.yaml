@@ -151,7 +151,6 @@ GEOMETRY:
             OBJECT_1: Source
             PARAMETERS:
                 REDSHIFT: 2.0
-        NOISE_SOURCE_1: POISSON_NOISE
     CONFIGURATION_2:
         NAME: JustAGalaxy
         FRACTION: 0.50
